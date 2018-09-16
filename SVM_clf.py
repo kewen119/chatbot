@@ -15,17 +15,17 @@ def get_train_data(file):
         data_x.append(feature)
         data_y.append(row[1])
     f.close()
-    X_train, X_test, y_train, y_test = train_test_split(data_x,data_y,test_size=0.2)
-    return X_train, X_test, y_train, y_test
+    # X_train, X_test, y_train, y_test = train_test_split(data_x,data_y,test_size=0.2)
+    return data_x, data_y
 
 def train_model_svm(file,stop_words):
-    X_train, X_test, y_train, y_test = get_train_data(file)
+    data_x, data_y = get_train_data(file)
     counter = CountVectorizer(analyzer="word",stop_words=stop_words)
-    train_data = counter.fit_transform(X_train)
-    test_data = counter.fit_transform(X_test)
+    train_data = counter.fit_transform(data_x).toarray
+    X_train, X_test, y_train, y_test = train_test_split(train_data, data_y, test_size=0.2)
     svm = SVC()
-    svm.fit(train_data,y_train)
-    print(svm.score(test_data,y_test))
+    svm.fit(X_train,y_train)
+    print(svm.score(X_test,y_test))
 
 
 if __name__=="__main__":
